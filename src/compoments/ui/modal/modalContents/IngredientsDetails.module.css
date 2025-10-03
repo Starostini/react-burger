@@ -1,0 +1,22 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.title {
+  align-self: flex-start;
+  line-height: 64px;
+}
+.nutrition {
+  display: flex;
+  justify-content: space-between;
+  gap: 20px;
+  width: 100%;
+  max-width: 520px;
+}
+
+.item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}

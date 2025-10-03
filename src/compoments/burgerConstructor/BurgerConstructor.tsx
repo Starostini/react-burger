@@ -6,10 +6,31 @@ import {
   Button,
   CurrencyIcon,
 } from "@ya.praktikum/react-developer-burger-ui-components";
-const BurgerConstructor = ({ buns, props }) => {
-  const [summ, setSumm] = useState(0);
+interface Ingredient {
+  uid?: string;
+  name: string;
+  price: number;
+  type: string;
+  position?: string;
+  images: {
+    image_normal: string;
+  };
+}
 
+interface BurgerConstructorProps {
+  buns: Ingredient[];
+  props: Ingredient[];
+  onOrder: () => void;
+}
+const BurgerConstructor: React.FC<BurgerConstructorProps> = ({
+  buns,
+  props,
+  onOrder,
+}) => {
+  const [summ, setSumm] = useState(0);
+  const [list, setList] = useState<Ingredient[]>([]);
   useEffect(() => {
+    setList(props);
     if (props.length > 0 || buns.length > 0) {
       const total = props.reduce((acc, item) => acc + item.price, 0);
       const bunsTotal = buns.length > 0 ? buns[0].price : 0;
@@ -34,25 +55,31 @@ const BurgerConstructor = ({ buns, props }) => {
           }
         />
       </div>
-      {props.length > 0 && (
+      {list.length > 0 && (
         <div className={stylesBurgerConstructor.line}>
-          {props.map((item) => (
-            <div
-              className={stylesBurgerConstructor.element}
-              key={`${item.uid}-div`}
-            >
-              {item.type !== "buns" && <DragIcon type="primary" />}
-              <ConstructorElement
-                key={item.uid}
-                type={item.position ? item.position : null}
-                isLocked={item.position ? true : false}
-                text={item.name}
-                price={item.price}
-                thumbnail={item.images.image_normal}
-                extraClass={"pl-6 pr-6 ml-2"}
-              />
-            </div>
-          ))}
+          {list.map((item) => {
+            return (
+              <div
+                className={stylesBurgerConstructor.element}
+                key={`${item.uid}-div`}
+              >
+                {item.type !== "buns" && <DragIcon type="primary" />}
+                <ConstructorElement
+                  key={item.uid}
+                  type={
+                    item.position
+                      ? (item.position as "top" | "bottom")
+                      : undefined
+                  }
+                  isLocked={item.position ? true : false}
+                  text={item.name}
+                  price={item.price}
+                  thumbnail={item.images.image_normal}
+                  extraClass={"pl-6 pr-6 ml-2"}
+                />
+              </div>
+            );
+          })}
         </div>
       )}
       <div className="ml-8 mt-4">
@@ -74,7 +101,12 @@ const BurgerConstructor = ({ buns, props }) => {
             <span className="text text_type_digits-medium mr-2">{summ}</span>
             <CurrencyIcon type="primary" />
           </div>
-          <Button htmlType="button" type="primary" size="large">
+          <Button
+            htmlType="button"
+            type="primary"
+            size="large"
+            onClick={onOrder}
+          >
             Оформить заказ
           </Button>
         </div>

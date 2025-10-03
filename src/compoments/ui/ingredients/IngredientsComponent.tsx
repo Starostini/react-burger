@@ -4,11 +4,24 @@ import {
   CurrencyIcon,
   Counter,
 } from "@ya.praktikum/react-developer-burger-ui-components";
-const IngredientsComponent = ({ props }) => {
-  const { name, price, images, onClick, counter } = props;
+import type { Ingredient } from "../../Interfaces/Interfaces";
+
+interface IngredientComponentProps {
+  ingredient: Ingredient;
+  onClick: (ingredient: Ingredient) => void;
+}
+
+const IngredientsComponent: React.FC<IngredientComponentProps> = ({
+  ingredient,
+  onClick,
+}) => {
+  const { name, price, images, counter = 0 } = ingredient;
 
   return (
-    <div className={`${stylesIngredients.card}`} onClick={() => onClick(props)}>
+    <div
+      className={`${stylesIngredients.card}`}
+      onClick={() => onClick(ingredient)}
+    >
       {counter > 0 && <Counter count={counter} size="default" />}
       <img alt={name} src={images.image_normal} className="ml-4 mr-4" />
       <div className={stylesIngredients.info}>

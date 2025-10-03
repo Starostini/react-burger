@@ -21,6 +21,8 @@
   flex-wrap: wrap;
   flex-direction: row;
   gap: 24px;
+  max-width: 600px;
+  width: 100%;
 }
 
 .line {

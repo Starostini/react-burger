@@ -5,20 +5,29 @@ import {
   ProfileIcon,
 } from "@ya.praktikum/react-developer-burger-ui-components";
 import stylesCustomButton from "./customButton.module.css";
-const CustomButton = ({ image, text, onClick }) => {
+
+interface CustomButtonProps {
+  image: ImageKey;
+  text: string;
+  onClick?: () => void;
+}
+type ImageKey = "burger" | "listIcon" | "userProfile";
+
+const CustomButton: React.FC<CustomButtonProps> = ({
+  image,
+  text,
+  onClick,
+}) => {
   const [hovered, setHovered] = useState(false);
-  const [clicked, setClicked] = useState(false);
-  const images = {
+  const images: Record<ImageKey, JSX.Element> = {
     burger: <BurgerIcon type={hovered ? "primary" : "secondary"} />,
     listIcon: <ListIcon type={hovered ? "primary" : "secondary"} />,
     userProfile: <ProfileIcon type={hovered ? "primary" : "secondary"} />,
   };
 
-  const handleButtonClick = (e) => {
-    e.preventDefault();
-    // setClicked(true);
+  const handleButtonClick = () => {
     if (onClick) {
-      onClick(e);
+      onClick();
     }
   };
   return (

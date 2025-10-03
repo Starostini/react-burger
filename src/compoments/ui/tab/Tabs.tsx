@@ -1,6 +1,14 @@
 import React from "react";
 import { Tab } from "@ya.praktikum/react-developer-burger-ui-components";
-const Tabs = ({ props, activeTab, onChange }) => {
+import type { IngredientHead } from "../../Interfaces/Interfaces";
+
+interface TabsProps {
+  props: Array<Pick<IngredientHead, "type_id" | "name" | "type">>;
+  activeTab: IngredientHead["type"] | "";
+  onChange: (type: IngredientHead["type"]) => void;
+}
+
+const Tabs: React.FC<TabsProps> = ({ props, activeTab, onChange }) => {
   const tabs = props;
   return (
     <div style={{ display: "flex" }} className="mb-10">
