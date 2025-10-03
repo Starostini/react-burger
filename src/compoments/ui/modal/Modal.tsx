@@ -1,7 +1,7 @@
-import ReactDOM from "react-dom";
 import React, { useEffect, type ReactNode } from "react";
 import stylesModal from "./modal.module.css";
 import { CloseIcon } from "@ya.praktikum/react-developer-burger-ui-components";
+import ModalOverlay from "./ModalOverlay";
 
 interface ModalProps {
   onClose: () => void;
@@ -23,7 +23,7 @@ const Modal: React.FC<ModalProps> = ({ onClose, children }) => {
     };
   }, [onClose]);
   return (
-    <div className={stylesModal.modalOverlay} onClick={onClose}>
+    <ModalOverlay onClose={onClose}>
       <div className={stylesModal.modal} onClick={(e) => e.stopPropagation()}>
         <button
           className={`${stylesModal.modalClose} mt-15 mr-10`}
@@ -33,7 +33,7 @@ const Modal: React.FC<ModalProps> = ({ onClose, children }) => {
         </button>
         {children}
       </div>
-    </div>
+    </ModalOverlay>
   );
 };
 

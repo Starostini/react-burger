@@ -4,18 +4,18 @@ import "./App.css";
 import Main from "./compoments/main/Main.js";
 import AppHeader from "./compoments/header/AppHeader.js";
 import Modal from "./compoments/ui/modal/Modal.js";
-import ModalOverlay from "./compoments/ui/modal/ModalOverlay.js";
 import ErrorMessage from "./compoments/ui/modal/modalContents/ErrorMessage.js";
 import type {
   IngredientResponseDetail,
   IngredientHead,
 } from "./compoments/Interfaces/Interfaces.js";
+import { useModal } from "./compoments/hooks/useModal.js";
 function App() {
   const API_URL = "https://norma.nomoreparties.space/api/ingredients";
   const [data, setData] = useState<IngredientHead[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
-
+  const { isModalOpen, closeModal, openModal } = useModal();
   useEffect(() => {
     const controller = new AbortController();
 
@@ -40,12 +40,12 @@ function App() {
         const sorted = formatData(result.data).sort(
           (a, b) => a.type_id - b.type_id
         );
-        console.log(sorted);
 
         setData(sorted);
       } catch (error) {
         if (error instanceof Error && error.name !== "AbortError") {
           setError(`Ошибка при выполнении запроса: ${error.message}`);
+          openModal();
         }
       } finally {
         setIsLoading(false);
@@ -106,18 +106,21 @@ function App() {
     return Object.values(preparedData);
   };
 
+  const handleClose = () => {
+    setError(null);
+    closeModal();
+  };
   return (
     <>
       <AppHeader />
-
+      {/* //TODO: Дописать модалку загрузки 
+      // + подумать над объединением модалок загрузки и ошибки в общую модалку и использования useModal */}
       {isLoading && <div>Loading</div>}
       {!isLoading && !error && <Main data={data} />}
-      {error && (
-        <ModalOverlay onClose={() => setError(null)}>
-          <Modal onClose={() => setError(null)}>
-            <ErrorMessage message={error} />
-          </Modal>
-        </ModalOverlay>
+      {isModalOpen && (
+        <Modal onClose={handleClose}>
+          <ErrorMessage message={error} />
+        </Modal>
       )}
     </>
   );

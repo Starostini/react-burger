@@ -4,8 +4,8 @@ import BurgerConstructor from "../burgerConstructor/BurgerConstructor";
 import stylesMain from "./main.module.css";
 import Modal from "../ui/modal/Modal";
 import OrderDetails from "../ui/modal/modalContents/OrderDetails";
-import ModalOverlay from "../ui/modal/ModalOverlay";
 import type { Ingredient, IngredientHead } from "../Interfaces/Interfaces";
+import { useModal } from "../hooks/useModal";
 
 interface BunsProps extends Ingredient {
   id: string;
@@ -31,8 +31,8 @@ const Main: React.FC<MainProps> = ({ data }) => {
   const [ingredientsData, setIngredientsData] = useState<IngredientHead[]>([]);
   const [choosenData, setChoosenData] = useState<Ingredient[]>([]);
   const [buns, setBuns] = useState<BunsProps[]>([]);
-  const [showOrder, setShowOrder] = useState(false);
 
+  const { isModalOpen, openModal, closeModal } = useModal();
   useEffect(() => {
     setIngredientsData(data);
   }, [data]);
@@ -72,7 +72,7 @@ const Main: React.FC<MainProps> = ({ data }) => {
   };
 
   const handleOrder = () => {
-    setShowOrder(true);
+    openModal();
   };
   return (
     <main className={stylesMain.main}>
@@ -85,12 +85,10 @@ const Main: React.FC<MainProps> = ({ data }) => {
         props={choosenData}
         onOrder={handleOrder}
       />
-      {showOrder && (
-        <ModalOverlay onClose={() => setShowOrder(false)}>
-          <Modal onClose={() => setShowOrder(false)}>
-            <OrderDetails orderId="034536" />
-          </Modal>
-        </ModalOverlay>
+      {isModalOpen && (
+        <Modal onClose={closeModal}>
+          <OrderDetails orderId="034536" />
+        </Modal>
       )}
     </main>
   );

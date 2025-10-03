@@ -13,11 +13,11 @@ const IngredientDetails: React.FC<IngredientDetailsProps> = ({
   const digit_styles = "text text_type_digits-default text_color_inactive";
   return (
     <div className={stylesIngredientsDetail.container}>
-      <h1
+      <h3
         className={`${stylesIngredientsDetail.title} text text_type_main-large mt-10 ml-10`}
       >
         Детали ингредиента
-      </h1>
+      </h3>
       <img
         src={images.image_large}
         alt={name}

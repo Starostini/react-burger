@@ -4,8 +4,8 @@ import IngredientsComponent from "../ui/ingredients/IngredientsComponent";
 import stylesBurgerIngredients from "./burgerIngredients.module.css";
 import Modal from "../ui/modal/Modal";
 import IngredientDetails from "../ui/modal/modalContents/IngredientsDetail";
-import ModalOverlay from "../ui/modal/ModalOverlay";
 import type { Ingredient, IngredientHead } from "../Interfaces/Interfaces";
+import { useModal } from "../hooks/useModal";
 
 interface BurgerIngredientsProps {
   handleIngredientsAdded: (ingredient: Ingredient) => void;
@@ -20,12 +20,13 @@ const BurgerIngredients: React.FC<BurgerIngredientsProps> = ({
   handleIngredientsAdded,
   dataIngredients,
 }) => {
+  const { isModalOpen, openModal, closeModal } = useModal();
+
   const [data, setData] = useState<IngredientHead[]>([]);
   const [tabs, setTabs] = useState<Tab[]>([]);
   const [active, setActive] = useState<IngredientHead["type"] | "">("");
   const [selectedIngredient, setSelectedIngredient] =
     useState<Ingredient | null>(null);
-  const [showDetail, setShowDetail] = useState(false);
   const scrollerRef = useRef<Record<string, HTMLDivElement | null>>({});
 
   useEffect(() => {
@@ -62,13 +63,10 @@ const BurgerIngredients: React.FC<BurgerIngredientsProps> = ({
       }))
     );
     setSelectedIngredient(type);
-    setShowDetail(true);
+    openModal();
     handleIngredientsAdded(type);
   };
 
-  const handleCloseModal = () => {
-    setShowDetail(false);
-  };
   const handleScrollToTab = (type: IngredientHead["type"]) => {
     setActive(type);
     const target = scrollerRef.current[type];
@@ -84,7 +82,7 @@ const BurgerIngredients: React.FC<BurgerIngredientsProps> = ({
         Соберите бургер
       </h1>
       <Tabs props={tabs} activeTab={active} onChange={handleScrollToTab} />
-      <div className={`${stylesBurgerIngredients.line} pr-3`}>
+      <div className={`${stylesBurgerIngredients.line} pr-4`}>
         {data.map((item) => (
           <div
             className={`${stylesBurgerIngredients.listContainer} mb-10`}
@@ -121,12 +119,10 @@ const BurgerIngredients: React.FC<BurgerIngredientsProps> = ({
           </div>
         ))}
       </div>
-      {showDetail && selectedIngredient ? (
-        <ModalOverlay onClose={handleCloseModal}>
-          <Modal onClose={handleCloseModal}>
-            <IngredientDetails ingredient={selectedIngredient} />
-          </Modal>
-        </ModalOverlay>
+      {isModalOpen && selectedIngredient ? (
+        <Modal onClose={closeModal}>
+          <IngredientDetails ingredient={selectedIngredient} />
+        </Modal>
       ) : null}
     </section>
   );

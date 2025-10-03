@@ -1,5 +1,6 @@
 import React from "react";
 import { Tab } from "@ya.praktikum/react-developer-burger-ui-components";
+import stylesTabs from "./tabs.module.css";
 import type { IngredientHead } from "../../Interfaces/Interfaces";
 
 interface TabsProps {
@@ -11,7 +12,7 @@ interface TabsProps {
 const Tabs: React.FC<TabsProps> = ({ props, activeTab, onChange }) => {
   const tabs = props;
   return (
-    <div style={{ display: "flex" }} className="mb-10">
+    <div className={`${stylesTabs.container} mb-10`}>
       {tabs.map((tab) => (
         <Tab
           key={tab.type_id}

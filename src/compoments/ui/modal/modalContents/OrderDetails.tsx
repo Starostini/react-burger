@@ -8,11 +8,11 @@ interface OrderDetailsProps {
 const OrderDetails: React.FC<OrderDetailsProps> = ({ orderId }) => {
   return (
     <>
-      <h1
+      <h3
         className={`${stylesOrderDetails.orderNumber} text text_type_digits-large mt-30`}
       >
         {orderId}
-      </h1>
+      </h3>
       <p className="text text_type_main-medium mt-8">идентификатор заказа</p>
       <div className={`${stylesOrderDetails.vector} mt-15 mb-15 pt-10 pb-10`}>
         <img
