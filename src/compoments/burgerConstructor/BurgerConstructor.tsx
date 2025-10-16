@@ -1,116 +1,173 @@
-import React, { useState, useEffect } from "react";
-import stylesBurgerConstructor from "./burgerConstructor.module.css";
+import React, { useCallback, useMemo } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { useDrop } from "react-dnd";
+import styles from "./burgerConstructor.module.css";
 import {
   ConstructorElement,
-  DragIcon,
   Button,
   CurrencyIcon,
 } from "@ya.praktikum/react-developer-burger-ui-components";
-interface Ingredient {
-  uid?: string;
-  name: string;
-  price: number;
-  type: string;
-  position?: string;
-  images: {
-    image_normal: string;
-  };
-}
+import type { AppDispatch } from "../../services/store.ts";
+import {
+  addIngredient,
+  deleteIngredient,
+  changeOrder,
+} from "../../services/constructorSlice";
+import {
+  constructorBun,
+  constructorItems,
+  summPrice,
+  orderLoading,
+} from "../../services/selectors";
+import type { StoreIngredient } from "../Interfaces/Interfaces.tsx";
+import ConstructorItem from "./ConstructorItem";
+
+const BUN_IMAGE_FALLBACK = "/images/N-200inormal.png";
+
+type DragCollected = {
+  isHovering: boolean;
+};
 
 interface BurgerConstructorProps {
-  buns: Ingredient[];
-  props: Ingredient[];
   onOrder: () => void;
 }
-const BurgerConstructor: React.FC<BurgerConstructorProps> = ({
-  buns,
-  props,
-  onOrder,
-}) => {
-  const [summ, setSumm] = useState(0);
-  const [list, setList] = useState<Ingredient[]>([]);
-  useEffect(() => {
-    setList(props);
-    if (props.length > 0 || buns.length > 0) {
-      const total = props.reduce((acc, item) => acc + item.price, 0);
-      const bunsTotal = buns.length > 0 ? buns[0].price : 0;
-      setSumm(total + bunsTotal);
-    } else {
-      setSumm(0);
+
+const BurgerConstructor: React.FC<BurgerConstructorProps> = ({ onOrder }) => {
+  const dispatch = useDispatch<AppDispatch>();
+  const bun = useSelector(constructorBun);
+  const items = useSelector(constructorItems);
+  const total = useSelector(summPrice);
+  const isOrderLoading = useSelector(orderLoading);
+
+  const [{ isHovering: isBunHover }, bunDropRef] = useDrop<StoreIngredient, void, DragCollected>(
+    () => ({
+      accept: "INGREDIENT",
+      canDrop: (item) => item.type === "bun",
+      drop: (item) => {
+        dispatch(addIngredient(item));
+      },
+      collect: (monitor) => ({
+        isHovering: monitor.isOver() && monitor.canDrop(),
+      }),
+    }),
+    [dispatch]
+  );
+
+  const [{ isHovering: isFillHover }, fillingsDropRef] = useDrop<
+      StoreIngredient,
+    void,
+    DragCollected
+  >(
+    () => ({
+      accept: "INGREDIENT",
+      canDrop: (item) => item.type === "main" || item.type === "sauce",
+      drop: (item) => {
+        dispatch(addIngredient(item));
+      },
+      collect: (monitor) => ({
+        isHovering: monitor.isOver() && monitor.canDrop(),
+      }),
+    }),
+    [dispatch]
+  );
+
+  const handleMove = useCallback(
+    (from: number, to: number) => {
+      dispatch(changeOrder({ from, to }));
+    },
+    [dispatch]
+  );
+
+  const handleRemove = useCallback(
+    (uid: string) => {
+      dispatch(deleteIngredient(uid));
+    },
+    [dispatch]
+  );
+
+  const { topText, bottomText } = useMemo(() => {
+    if (!bun) {
+      return {
+        topText: "Выберите булку",
+        bottomText: "Выберите булку",
+      };
     }
-  }, [buns, props]);
+    return {
+      topText: `${bun.name} (верх)`,
+      bottomText: `${bun.name} (низ)`,
+    };
+  }, [bun]);
+
+  const isOrderDisabled = !bun || items.length === 0 || isOrderLoading;
 
   return (
-    <section className={`${stylesBurgerConstructor.container} mt-25 ml-4`}>
-      <div className="ml-8 mb-4">
-        <ConstructorElement
-          type="top"
-          isLocked={true}
-          text={buns.length > 0 ? buns[0].name : "Выберите булку"}
-          price={buns.length > 0 ? buns[0].price : 0}
-          thumbnail={
-            buns.length > 0
-              ? buns[0].images.image_normal
-              : "/images/N-200inormal.png"
-          }
-        />
-      </div>
-      {list.length > 0 && (
-        <div className={stylesBurgerConstructor.line}>
-          {list.map((item) => {
-            return (
-              <div
-                className={stylesBurgerConstructor.element}
-                key={`${item.uid}-div`}
-              >
-                {item.type !== "buns" && <DragIcon type="primary" />}
-                <ConstructorElement
-                  key={item.uid}
-                  type={
-                    item.position
-                      ? (item.position as "top" | "bottom")
-                      : undefined
-                  }
-                  isLocked={item.position ? true : false}
-                  text={item.name}
-                  price={item.price}
-                  thumbnail={item.images.image_normal}
-                  extraClass={"pl-6 pr-6 ml-2"}
-                />
-              </div>
-            );
-          })}
+    <section className={`${styles.container} mt-25 ml-4`}>
+      <div
+        ref={bunDropRef}
+        className={`${styles.buns} ${isBunHover ? styles.dropped : ""}`}
+      >
+        <div className="ml-8 mb-2">
+          <ConstructorElement
+            type="top"
+            isLocked={true}
+            text={topText}
+            price={bun?.price ?? 0}
+            thumbnail={bun?.images.image_normal ?? BUN_IMAGE_FALLBACK}
+          />
         </div>
-      )}
-      <div className="ml-8 mt-4">
-        <ConstructorElement
-          type="bottom"
-          isLocked={true}
-          text={buns.length > 0 ? buns[1].name : "Выберите булку"}
-          price={buns.length > 0 ? buns[1].price : 0}
-          thumbnail={
-            buns.length > 0
-              ? buns[1].images.image_normal
-              : "/images/N-200inormal.png"
-          }
-        />
-      </div>
-      {summ > 0 && (
-        <div className={`${stylesBurgerConstructor.order} mt-10 mr-4`}>
-          <div>
-            <span className="text text_type_digits-medium mr-2">{summ}</span>
-            <CurrencyIcon type="primary" />
-          </div>
-          <Button
-            htmlType="button"
-            type="primary"
-            size="large"
-            onClick={onOrder}
+          <div
+              ref={fillingsDropRef}
+              className={`${styles.line} ${
+                  isFillHover ? styles.dropped : ""
+              }`}
           >
-            Оформить заказ
-          </Button>
+              {items.length > 0 ? (
+                  items.map((item, index) => {
+                      if (!item.uid) {
+                          return null;
+                      }
+                      return (
+                          <ConstructorItem
+                              key={item.uid}
+                              item={{ ...item, uid: item.uid }}
+                              index={index}
+                              moveItem={handleMove}
+                              onRemove={handleRemove}
+                          />
+                      );
+                  })
+              ) : (
+                  <p className={`${styles.empty_info} text text_type_main-default`}>
+                      Перетащите начинку сюда
+                  </p>
+              )}
+          </div>
+        <div className="ml-8 mt-2">
+          <ConstructorElement
+            type="bottom"
+            isLocked={true}
+            text={bottomText}
+            price={bun?.price ?? 0}
+            thumbnail={bun?.images.image_normal ?? BUN_IMAGE_FALLBACK}
+          />
         </div>
-      )}
+      </div>
+
+      <div className={`${styles.order} mt-10 mr-4`}>
+        <div>
+          <span className="text text_type_digits-medium mr-2">{total}</span>
+          <CurrencyIcon type="primary" />
+        </div>
+        <Button
+          htmlType="button"
+          type="primary"
+          size="large"
+          onClick={onOrder}
+          disabled={isOrderDisabled}
+        >
+          Оформить заказ
+        </Button>
+      </div>
     </section>
   );
 };

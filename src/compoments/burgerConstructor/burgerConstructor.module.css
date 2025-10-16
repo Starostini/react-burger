@@ -33,3 +33,15 @@
   justify-content: flex-end;
   gap: 40px;
 }
+
+.dropped {
+  border-color: #610fdc;
+  border-radius: 24px;
+  background: #6229FF08;
+}
+
+.empty_info {
+  margin: 0;
+  color: #8585ad;
+    padding: 28px 0;
+}

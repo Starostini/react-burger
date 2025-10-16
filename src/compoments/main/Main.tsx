@@ -1,93 +1,55 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import BurgerIngredients from "../burgerIngredients/BurgerIngredients";
 import BurgerConstructor from "../burgerConstructor/BurgerConstructor";
 import stylesMain from "./main.module.css";
 import Modal from "../ui/modal/Modal";
 import OrderDetails from "../ui/modal/modalContents/OrderDetails";
-import type { Ingredient, IngredientHead } from "../Interfaces/Interfaces";
+import type { IngredientHead } from "../Interfaces/Interfaces";
 import { useModal } from "../hooks/useModal";
+import { constructorBun, constructorItems, orderError, orderLoading, orderNumberState } from "../../services/selectors";
+import { createOrder } from "../../services/orderSlice";
+import type { AppDispatch } from "../../services/store.ts";
 
-interface BunsProps extends Ingredient {
-  id: string;
-  uid?: string;
-  name: string;
-  position: "top" | "bottom";
-  type: "bun";
-  price: number;
-  proteins: number;
-  fat: number;
-  carbohydrates: number;
-  calories: number;
-  images: {
-    image_large: string;
-    image_normal: string;
-    image_mobile: string;
-  };
-}
 interface MainProps {
   data: IngredientHead[];
 }
+
 const Main: React.FC<MainProps> = ({ data }) => {
-  const [ingredientsData, setIngredientsData] = useState<IngredientHead[]>([]);
-  const [choosenData, setChoosenData] = useState<Ingredient[]>([]);
-  const [buns, setBuns] = useState<BunsProps[]>([]);
-
+  const dispatch = useDispatch<AppDispatch>();
   const { isModalOpen, openModal, closeModal } = useModal();
-  useEffect(() => {
-    setIngredientsData(data);
-  }, [data]);
-  const handleIngredientsAdded = (item: Ingredient) => {
-    const isBun = item.type === "bun";
-
-    if (isBun) {
-      setBuns(() => {
-        const topBun: BunsProps = {
-          ...item,
-          id: `${item.id}-top`,
-          name: `${item.name} (верх)`,
-          position: "top",
-          type: "bun",
-        };
-
-        const bottomBun: BunsProps = {
-          ...item,
-          id: `${item.id}-bottom`,
-          name: `${item.name} (низ)`,
-          position: "bottom",
-          type: "bun",
-        };
-
-        return [topBun, bottomBun];
-      });
-    } else {
-      setChoosenData((prev) => {
-        const newItem = {
-          ...item,
-          uid: crypto.randomUUID(),
-        };
-
-        return [...prev, newItem];
-      });
+  const bun = useSelector(constructorBun);
+  const items = useSelector(constructorItems);
+  const orderNumber = useSelector(orderNumberState);
+  const isOrderLoading = useSelector(orderLoading);
+  const orderErr = useSelector(orderError);
+  const handleOrder = useCallback(() => {
+    if (!bun) {
+      return;
     }
-  };
-
-  const handleOrder = () => {
+    const bunId = bun._id ?? bun.id;
+    const fillingIds = items.map((item) => item._id ?? item.id);
+    const ingredientIds = [bunId, ...fillingIds, bunId];
     openModal();
-  };
+    dispatch(createOrder(ingredientIds));
+  }, [bun, items, dispatch, openModal]);
+
+  const handleCloseModal = useCallback(() => {
+    closeModal();
+
+  }, [closeModal, dispatch]);
+
   return (
     <main className={stylesMain.main}>
-      <BurgerIngredients
-        handleIngredientsAdded={handleIngredientsAdded}
-        dataIngredients={ingredientsData}
-      />
-      <BurgerConstructor
-        buns={buns}
-        props={choosenData}
-        onOrder={handleOrder}
-      />
+      <BurgerIngredients dataIngredients={data} />
+      <BurgerConstructor onOrder={handleOrder} />
       {isModalOpen && (
-        <Modal onClose={closeModal}>
-          <OrderDetails orderId="034536" />
+        <Modal onClose={handleCloseModal}>
+          <OrderDetails
+            isLoading={isOrderLoading}
+            orderNumber={orderNumber}
+            error={orderErr}
+          />
         </Modal>
       )}
     </main>

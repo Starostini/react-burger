@@ -44,3 +44,37 @@ export interface Ingredient {
     image_mobile: string;
   };
 }
+
+
+
+export type AsyncState<T> = {
+    data: T;
+    isLoading: boolean;
+    error: string | null;
+};
+
+
+export type StoreIngredient = {
+    id: string;
+    _id?: string;
+    type: "bun" | "sauce" | "main";
+    name: string;
+    price: number;
+    proteins: number;
+    fat: number;
+    carbohydrates: number;
+    calories: number;
+    images: {
+        image_large: string;
+        image_normal: string;
+        image_mobile: string;
+    };
+    uid?: string;
+};
+
+
+export type OrderResponse = {
+    name: string;
+    order: { number: number };
+    success: boolean;
+};

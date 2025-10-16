@@ -10,7 +10,8 @@ interface TabsProps {
 }
 
 const Tabs: React.FC<TabsProps> = ({ props, activeTab, onChange }) => {
-  const tabs = props;
+
+    const tabs = props;
   return (
     <div className={`${stylesTabs.container} mb-10`}>
       {tabs.map((tab) => (

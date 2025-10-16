@@ -3,17 +3,56 @@ import stylesOrderDetails from "./orderDetails.module.css";
 import { CheckMarkIcon } from "@ya.praktikum/react-developer-burger-ui-components";
 
 interface OrderDetailsProps {
-  orderId: string | number;
+  isLoading: boolean;
+  orderNumber: number | null;
+  error: string | null;
 }
-const OrderDetails: React.FC<OrderDetailsProps> = ({ orderId }) => {
+
+const OrderDetails: React.FC<OrderDetailsProps> = ({
+  isLoading,
+  orderNumber,
+  error,
+}) => {
+  const renderBody = () => {
+    if (isLoading) {
+      return (
+        <p className="text text_type_main-medium mt-8 mb-20">
+          Оформляем заказ...
+        </p>
+      );
+    }
+
+    if (error) {
+      return (
+        <p className="text text_type_main-medium mt-8 mb-20">
+          Ошибка: {error}
+        </p>
+      );
+    }
+
+    if (orderNumber) {
+      return (
+        <>
+          <h3
+            className={`${stylesOrderDetails.orderNumber} text text_type_digits-large mt-30`}
+          >
+            {orderNumber}
+          </h3>
+          <p className="text text_type_main-medium mt-8">идентификатор заказа</p>
+        </>
+      );
+    }
+
+    return (
+      <p className="text text_type_main-medium mt-8 mb-20">
+        Номер заказа будет отображён после оформления.
+      </p>
+    );
+  };
+
   return (
     <>
-      <h3
-        className={`${stylesOrderDetails.orderNumber} text text_type_digits-large mt-30`}
-      >
-        {orderId}
-      </h3>
-      <p className="text text_type_main-medium mt-8">идентификатор заказа</p>
+      {renderBody()}
       <div className={`${stylesOrderDetails.vector} mt-15 mb-15 pt-10 pb-10`}>
         <img
           className={stylesOrderDetails.vectorsImg}

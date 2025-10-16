@@ -1,75 +1,47 @@
 import React, { useEffect } from "react";
-import { useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { DndProvider } from "react-dnd";
+import { HTML5Backend } from "react-dnd-html5-backend";
 import "./App.css";
-import Main from "./compoments/main/Main.js";
-import AppHeader from "./compoments/header/AppHeader.js";
-import Modal from "./compoments/ui/modal/Modal.js";
-import ErrorMessage from "./compoments/ui/modal/modalContents/ErrorMessage.js";
+import type { AppDispatch } from "./services/store.ts";
+import { fetchIngredients } from "./services/ingredientsSlice.ts";
+import { allIngredients, error, loading } from "./services/selectors.ts";
+import Main from "./compoments/main/Main.tsx";
+import AppHeader from "./compoments/header/AppHeader.tsx";
+import Modal from "./compoments/ui/modal/Modal.tsx";
+import ErrorMessage from "./compoments/ui/modal/modalContents/ErrorMessage.tsx";
 import type {
-  IngredientResponseDetail,
-  IngredientHead,
-} from "./compoments/Interfaces/Interfaces.js";
-import { useModal } from "./compoments/hooks/useModal.js";
+    IngredientHead,
+    Ingredient,
+} from "./compoments/Interfaces/Interfaces.tsx";
+import { useModal } from "./compoments/hooks/useModal.tsx";
+
 function App() {
-  const API_URL = "https://norma.nomoreparties.space/api/ingredients";
-  const [data, setData] = useState<IngredientHead[]>([]);
-  const [isLoading, setIsLoading] = useState<boolean>(true);
-  const [error, setError] = useState<string | null>(null);
+
   const { isModalOpen, closeModal, openModal } = useModal();
+  const dispatch = useDispatch<AppDispatch>();
+
+  const ingredients = useSelector(allIngredients);
+  const isLoading = useSelector(loading);
+  const isError = useSelector(error);
+
   useEffect(() => {
-    const controller = new AbortController();
+      dispatch(fetchIngredients());
+  }, [dispatch]);
 
-    const fetchData = async () => {
-      try {
-        const response = await fetch(`${API_URL}`, {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          signal: controller.signal,
-        });
+  useEffect(() => {
+    if (isError) openModal();
+  }, [isError]);
 
-        if (!response.ok) {
-          const errorResponse = await response.json();
-          throw new Error(
-            `Ошибка: ${await errorResponse.status} ${errorResponse?.message}`
-          );
-        }
-
-        const result = await response.json();
-        const sorted = formatData(result.data).sort(
-          (a, b) => a.type_id - b.type_id
-        );
-
-        setData(sorted);
-      } catch (error) {
-        if (error instanceof Error && error.name !== "AbortError") {
-          setError(`Ошибка при выполнении запроса: ${error.message}`);
-          openModal();
-        }
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
-    fetchData();
-
-    return () => {
-      controller.abort();
-    };
-  }, []);
-
-  const formatData = (data: IngredientResponseDetail[]) => {
+  function formatData(data: Ingredient[]): IngredientHead[] {
     const allowedTypes = ["bun", "sauce", "main"] as const;
     const headType = {
       bun: { type_id: 1, type: "bun", name: "Булки" },
       sauce: { type_id: 2, type: "sauce", name: "Соусы" },
       main: { type_id: 3, type: "main", name: "Начинки" },
-    };
+    } as const;
 
-    const preparedData: {
-      [key in "bun" | "sauce" | "main"]?: IngredientHead;
-    } = {};
+    const preparedData: { [key in "bun" | "sauce" | "main"]?: IngredientHead } = {};
 
     data.forEach((item) => {
       if (!allowedTypes.includes(item.type)) return;
@@ -85,9 +57,9 @@ function App() {
           data: [],
         };
       }
-
-      preparedData[typeKey].data.push({
-        id: item._id,
+      preparedData[typeKey]!.data.push({
+        id: item.id,
+          // _id: item._id,
         type: typeKey,
         name: item.name,
         price: item.price,
@@ -96,33 +68,33 @@ function App() {
         carbohydrates: item.carbohydrates,
         calories: item.calories,
         images: {
-          image_large: item.image_large,
-          image_normal: item.image,
-          image_mobile: item.image_mobile,
+          image_large: item.images.image_large,
+          image_normal: item.images.image_normal,
+          image_mobile: item.images.image_mobile,
         },
       });
     });
 
     return Object.values(preparedData);
-  };
+  }
 
-  const handleClose = () => {
-    setError(null);
-    closeModal();
-  };
+  const data = React.useMemo(() => formatData(ingredients as Ingredient[]), [ingredients]);
+
   return (
-    <>
-      <AppHeader />
-      {/* //TODO: Дописать модалку загрузки 
-      // + подумать над объединением модалок загрузки и ошибки в общую модалку и использования useModal */}
-      {isLoading && <div>Loading</div>}
-      {!isLoading && !error && <Main data={data} />}
-      {isModalOpen && (
-        <Modal onClose={handleClose}>
-          <ErrorMessage message={error} />
-        </Modal>
-      )}
-    </>
+      <DndProvider backend={HTML5Backend}>
+        <>
+          <AppHeader />
+          {/* //TODO: Дописать модалку загрузки
+          // + подумать над объединением модалок загрузки и ошибки в общую модалку и использования useModal */}
+          {isLoading && <div>Loading</div>}
+          {!isLoading && !isError && <Main data={data} />}
+          {isModalOpen && (
+            <Modal onClose={closeModal}>
+              <ErrorMessage message={isError} />
+            </Modal>
+          )}
+        </>
+      </DndProvider>
   );
 }
 
