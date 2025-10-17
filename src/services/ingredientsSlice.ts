@@ -1,26 +1,13 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import type {StoreIngredient } from "../compoments/Interfaces/Interfaces";
-import type {IngredientResponseDetail, AsyncState} from "../compoments/Interfaces/Interfaces.tsx";
-import {BASE_URL} from "../base.ts";
-
-
-
+import type { StoreIngredient } from "../compoments/Interfaces/Interfaces";
+import type { IngredientResponseDetail, AsyncState, IngredientsResponse } from "../compoments/Interfaces/Interfaces.tsx";
+import { request } from "../utils/request";
 
 export const fetchIngredients = createAsyncThunk<StoreIngredient[]>(
     "ingredients/fetch",
     async (_, thunkAPI) => {
-        const API_URL = `${BASE_URL}/ingredients`;
         try {
-            const response = await fetch(API_URL);
-
-            if (!response.ok) {
-                const errorRes = await response.json().catch();
-                throw new Error(`${response.status} ${errorRes?.message ?? ""}`.trim());
-            }
-
-            const json = await response.json();
-
-            console.log(json)
+            const json = await request<IngredientsResponse>("/ingredients");
 
             const formatted: StoreIngredient[] = json.data.map((i: IngredientResponseDetail) => ({
                 id: i._id,

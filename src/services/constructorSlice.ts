@@ -12,13 +12,27 @@ const constructorSlice = createSlice({
     name: "constructor",
     initialState,
     reducers: {
-        addIngredient(state, action: PayloadAction<StoreIngredient>) {
-            const ing = action.payload;
-            if (ing.type === "bun") {
-                state.bun = ing;
-            } else {
-                state.items.push({ ...ing, uid: nanoid() });
-            }
+        addIngredient: {
+            reducer(state, action: PayloadAction<StoreIngredient>) {
+                const ing = action.payload;
+                if (ing.type === "bun") {
+                    state.bun = ing;
+                } else {
+                    state.items.push(ing);
+                }
+            },
+            prepare(ingredient: StoreIngredient) {
+                if (ingredient.type === "bun") {
+                    return { payload: { ...ingredient } };
+                }
+
+                return {
+                    payload: {
+                        ...ingredient,
+                        uid: ingredient.uid ?? nanoid(),
+                    },
+                };
+            },
         },
         deleteIngredient(state, action: PayloadAction<string>) {
             state.items = state.items.filter((i) => i.uid !== action.payload);

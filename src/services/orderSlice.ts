@@ -1,23 +1,18 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { BASE_URL } from "../base.ts";
 import type { OrderResponse, AsyncState } from "../compoments/Interfaces/Interfaces.tsx";
-
-const URL_API = `${BASE_URL}/orders`;
+import { request } from "../utils/request";
+import { clearConstructor } from "./constructorSlice";
 
 export const createOrder = createAsyncThunk<number, string[]>(
     "order/create",
     async (data, thunkAPI) => {
         try {
-            const response = await fetch(URL_API, {
+            const json = await request<OrderResponse>("/orders", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ ingredients: data }),
             });
-            if (!response.ok) {
-                const err = await response.json().catch(() => ({}));
-                throw new Error(`${response.status} ${err?.message ?? ""}`.trim());
-            }
-            const json: OrderResponse = await response.json();
+            thunkAPI.dispatch(clearConstructor());
             return json.order.number;
         } catch (e: any) {
             return thunkAPI.rejectWithValue(e.message ?? "Order failed");
@@ -36,8 +31,7 @@ const initialState: OrderState = {
 const orderSlice = createSlice({
     name: "order",
     initialState,
-    reducers: {
-    },
+    reducers: {},
     extraReducers(builder) {
         builder
             .addCase(createOrder.pending, (state) => {
@@ -54,6 +48,5 @@ const orderSlice = createSlice({
             });
     },
 });
-
 
 export const orderReducer = orderSlice.reducer;
