@@ -17,16 +17,6 @@ export interface IngredientResponseDetail {
   __v: number;
 }
 
-export interface IngredientData {
-  data: IngredientHead[];
-}
-export interface IngredientHead {
-  type_id: number;
-  type: "bun" | "sauce" | "main";
-  name: "Булки" | "Соусы" | "Начинки";
-  data: Ingredient[];
-}
-
 export interface Ingredient {
   id: string;
   type: "bun" | "sauce" | "main";
@@ -78,3 +68,5 @@ export type OrderResponse = {
     order: { number: number };
     success: boolean;
 };
+
+export type IngredientType = "bun" | "sauce" | "main";

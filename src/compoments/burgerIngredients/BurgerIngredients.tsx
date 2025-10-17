@@ -5,43 +5,91 @@ import IngredientsComponent from "../ui/ingredients/IngredientsComponent";
 import stylesBurgerIngredients from "./burgerIngredients.module.css";
 import Modal from "../ui/modal/Modal";
 import IngredientDetails from "../ui/modal/modalContents/IngredientsDetail";
-import type { Ingredient, IngredientHead } from "../Interfaces/Interfaces";
+import type { Ingredient } from "../Interfaces/Interfaces";
 import { useModal } from "../hooks/useModal";
 import {
   constructorBun,
   constructorItems,
   currentIngredient,
-    allIngredients,
+  allIngredients,
 } from "../../services/selectors";
 import type { AppDispatch } from "../../services/store.ts";
 import { setCurrent, clearCurrent } from "../../services/currentIngredientSlice";
 import type { StoreIngredient } from "../Interfaces/Interfaces.tsx";
+import { fetchIngredients } from "../../services/ingredientsSlice";
 
-interface BurgerIngredientsProps {
-  dataIngredients: IngredientHead[];
-}
+type IngredientType = StoreIngredient["type"];
+
+type IngredientSection = {
+  type_id: number;
+  type: IngredientType;
+  name: "Булки" | "Соусы" | "Начинки";
+  data: Ingredient[];
+};
+
 interface Tab {
   type_id: number;
   name: "Булки" | "Соусы" | "Начинки";
   type: "bun" | "sauce" | "main";
 }
-const BurgerIngredients: React.FC<BurgerIngredientsProps> = ({
-  dataIngredients,
-}) => {
+const BurgerIngredients: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();
   const { isModalOpen, openModal, closeModal } = useModal();
-  const [data, setData] = useState<IngredientHead[]>([]);
   const [tabs, setTabs] = useState<Tab[]>([]);
-  const [active, setActive] = useState<IngredientHead["type"] | "">("");
-  const scrollerRef = useRef<Record<string, HTMLDivElement | null>>({});
+  const [active, setActive] = useState<IngredientType | "">("");
+  const scrollerRef = useRef<Partial<Record<IngredientType, HTMLDivElement | null>>>({});
   const scrollContainerRef = useRef<HTMLDivElement | null>(null);
   const bun = useSelector(constructorBun);
   const items = useSelector(constructorItems);
   const selectedIngredient = useSelector(currentIngredient);
   const ingredients = useSelector(allIngredients);
 
+  useEffect(() => {
+    if (!ingredients || ingredients.length === 0) {
+      dispatch(fetchIngredients());
+    }
+  }, [dispatch, ingredients]);
+
+  const dataIngredients = useMemo(() => {
+    if (!ingredients || ingredients.length === 0) {
+      return [] as IngredientSection[];
+    }
+
+    const typeMeta: Record<IngredientType, { type_id: number; name: IngredientSection["name"] }> = {
+      bun: { type_id: 1, name: "Булки" },
+        main: { type_id: 2, name: "Начинки" },
+      sauce: { type_id: 3, name: "Соусы" },
+
+    };
+
+    const grouped: Record<IngredientType, Ingredient[]> = {
+      bun: [],
+      sauce: [],
+      main: [],
+    };
+
+    ingredients.forEach((item) => {
+      const type = item.type as IngredientType;
+      if (!typeMeta[type]) {
+        return;
+      }
+      grouped[type].push({
+        ...item,
+      });
+    });
+
+    return (Object.keys(typeMeta) as IngredientType[])
+      .map((type) => ({
+        type_id: typeMeta[type].type_id,
+        type,
+        name: typeMeta[type].name,
+        data: grouped[type],
+      }))
+      .filter((section) => section.data.length > 0);
+  }, [ingredients]);
+
   const preparedData = useMemo(() => {
-    return data.map((section) => ({
+    return dataIngredients.map((section) => ({
       ...section,
       data: section.data.map((ingredient) => {
         let counter = 0;
@@ -50,18 +98,17 @@ const BurgerIngredients: React.FC<BurgerIngredientsProps> = ({
         } else {
           counter = items.filter((item) => item.id === ingredient.id).length;
         }
+
         return {
           ...ingredient,
           counter,
         };
       }),
     }));
-  }, [data, bun, items]);
+  }, [dataIngredients, bun, items]);
 
   useEffect(() => {
-    const safeData = dataIngredients;
-    setData(safeData);
-    const nextTabs = safeData.map((item) => ({
+    const nextTabs = dataIngredients.map((item) => ({
       type_id: item.type_id,
       name: item.name,
       type: item.type,
@@ -92,7 +139,7 @@ const BurgerIngredients: React.FC<BurgerIngredientsProps> = ({
         return;
       }
       const containerRect = container.getBoundingClientRect();
-      let closestType: IngredientHead["type"] | "";
+      let closestType: IngredientType | "" = "";
       let minDistance = Number.POSITIVE_INFINITY;
 
       entries.forEach(([type, element]) => {
@@ -103,13 +150,13 @@ const BurgerIngredients: React.FC<BurgerIngredientsProps> = ({
           element.getBoundingClientRect().top - containerRect.top
         );
         if (distance < minDistance) {
-          closestType = type as IngredientHead["type"] | "";
+          closestType = type as IngredientType;
           minDistance = distance;
         }
       });
 
       if (closestType) {
-        setActive((prev): ""|"bun"|"sauce"|"main" => (prev === closestType ? prev : closestType));
+        setActive((prev): IngredientType | "" => (prev === closestType ? prev : closestType));
       }
     };
 
@@ -147,7 +194,7 @@ const BurgerIngredients: React.FC<BurgerIngredientsProps> = ({
     closeModal();
   };
 
-  const handleScrollToTab = (type: IngredientHead["type"]) => {
+  const handleScrollToTab = (type: IngredientType) => {
     setActive(type);
     const target = scrollerRef.current[type];
     if (target) {
