@@ -1,8 +1,8 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-
+import {BASE_URL} from "./ingredientsSlice.ts";
 import type { OrderResponse, AsyncState } from "../compoments/Interfaces/Interfaces.tsx";
 
-const URL_API = "https://norma.nomoreparties.space/api/orders";
+const URL_API = `${BASE_URL}/orders`;
 
 export const createOrder = createAsyncThunk<number, string[]>(
     "order/create",

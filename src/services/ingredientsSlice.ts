@@ -2,7 +2,9 @@ import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import type {StoreIngredient } from "../compoments/Interfaces/Interfaces";
 import type {IngredientResponseDetail, AsyncState} from "../compoments/Interfaces/Interfaces.tsx";
 
-const API_URL = "https://norma.nomoreparties.space/api/ingredients";
+
+export const BASE_URL = "https://norma.nomoreparties.space/api";
+const API_URL = `${BASE_URL}/ingredients`;
 
 export const fetchIngredients = createAsyncThunk<StoreIngredient[]>(
     "ingredients/fetch",
