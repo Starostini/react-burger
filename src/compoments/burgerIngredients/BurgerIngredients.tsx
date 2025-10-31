@@ -1,20 +1,17 @@
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { useLocation, useNavigate } from "react-router-dom";
 import Tabs from "../ui/tab/Tabs";
 import IngredientsComponent from "../ui/ingredients/IngredientsComponent";
 import stylesBurgerIngredients from "./burgerIngredients.module.css";
-import Modal from "../ui/modal/Modal";
-import IngredientDetails from "../ui/modal/modalContents/IngredientsDetail";
 import type { Ingredient } from "../Interfaces/Interfaces";
-import { useModal } from "../hooks/useModal";
 import {
   constructorBun,
   constructorItems,
-  currentIngredient,
   allIngredients,
 } from "../../services/selectors";
 import type { AppDispatch } from "../../services/store.ts";
-import { setCurrent, clearCurrent } from "../../services/currentIngredientSlice";
+import { setCurrent } from "../../services/currentIngredientSlice";
 import type { StoreIngredient } from "../Interfaces/Interfaces.tsx";
 import { fetchIngredients } from "../../services/ingredientsSlice";
 
@@ -34,14 +31,14 @@ interface Tab {
 }
 const BurgerIngredients: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();
-  const { isModalOpen, openModal, closeModal } = useModal();
+  const navigate = useNavigate();
+  const location = useLocation();
   const [tabs, setTabs] = useState<Tab[]>([]);
   const [active, setActive] = useState<IngredientType | "">("");
   const scrollerRef = useRef<Partial<Record<IngredientType, HTMLDivElement | null>>>({});
   const scrollContainerRef = useRef<HTMLDivElement | null>(null);
   const bun = useSelector(constructorBun);
   const items = useSelector(constructorItems);
-  const selectedIngredient = useSelector(currentIngredient);
   const ingredients = useSelector(allIngredients);
 
   useEffect(() => {
@@ -186,12 +183,7 @@ const BurgerIngredients: React.FC = () => {
   const handleButtonClick = (ingredient: Ingredient) => {
     const original = ingredients.find((item) => item.id === ingredient.id);
     dispatch(setCurrent(original ?? toStoreIngredient(ingredient)));
-    openModal();
-  };
-
-  const handleCloseModal = () => {
-    dispatch(clearCurrent());
-    closeModal();
+    navigate(`/ingredients/${ingredient.id}`, { state: { backgroundLocation: location } });
   };
 
   const handleScrollToTab = (type: IngredientType) => {
@@ -249,11 +241,6 @@ const BurgerIngredients: React.FC = () => {
           </div>
         ))}
       </div>
-      {isModalOpen && selectedIngredient ? (
-        <Modal onClose={handleCloseModal}>
-          <IngredientDetails ingredient={selectedIngredient} />
-        </Modal>
-      ) : null}
     </section>
   );
 };

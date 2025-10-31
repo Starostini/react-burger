@@ -23,3 +23,8 @@ export const summPrice = (state: RootState) => {
     const others = items.reduce((sum, i) => sum + i.price, 0);
     return bunTotal + others;
 };
+
+export const currentUser = (state: RootState) => state.user.data;
+export const userLoading = (state: RootState) => state.user.isLoading;
+export const userError = (state: RootState) => state.user.error;
+export const isAuthChecked = (state: RootState) => state.user.isAuthChecked;

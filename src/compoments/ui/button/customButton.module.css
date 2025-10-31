@@ -11,6 +11,10 @@
   color: #8585ad;
   transition: color 0.3s ease;
 }
+
+.linkActive {
+  color: #f2f2f3;
+}
 .link:hover {
   color: #f2f2f3;
 }

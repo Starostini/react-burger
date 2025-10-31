@@ -1,5 +1,6 @@
 import React, { useCallback, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { useLocation, useNavigate } from "react-router-dom";
 import BurgerIngredients from "../burgerIngredients/BurgerIngredients";
 import BurgerConstructor from "../burgerConstructor/BurgerConstructor";
 import stylesMain from "./main.module.css";
@@ -15,12 +16,17 @@ import {
   orderNumberState,
   loading,
   error,
+  currentUser,
+  isAuthChecked,
 } from "../../services/selectors";
 import { createOrder } from "../../services/orderSlice";
 import type { AppDispatch } from "../../services/store.ts";
+import AlertModal from "../ui/modal/modalContents/AlertModal.tsx";
 
 const Main: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();
+  const navigate = useNavigate();
+  const location = useLocation();
   const {
     isModalOpen: isOrderModalOpen,
     openModal: openOrderModal,
@@ -38,6 +44,8 @@ const Main: React.FC = () => {
   const orderErr = useSelector(orderError);
   const isIngredientsLoading = useSelector(loading);
   const ingredientsError = useSelector(error);
+  const user = useSelector(currentUser);
+  const authChecked = useSelector(isAuthChecked);
 
   useEffect(() => {
     if (ingredientsError) {
@@ -51,12 +59,22 @@ const Main: React.FC = () => {
     if (!bun) {
       return;
     }
+
+    if (authChecked && !user) {
+      navigate("/login", { state: { from: location } });
+      return;
+    }
+
+    if (!user) {
+      return;
+    }
+
     const bunId = bun._id ?? bun.id;
     const fillingIds = items.map((item) => item._id ?? item.id);
     const ingredientIds = [bunId, ...fillingIds, bunId];
     openOrderModal();
     dispatch(createOrder(ingredientIds));
-  }, [bun, items, dispatch, openOrderModal]);
+  }, [authChecked, bun, dispatch, items, location, navigate, openOrderModal, user]);
 
   const handleCloseModal = useCallback(() => {
     closeOrderModal();
@@ -64,7 +82,8 @@ const Main: React.FC = () => {
 
   return (
     <main className={stylesMain.main}>
-      {isIngredientsLoading && <div>Loading</div>}
+      {isIngredientsLoading && <Modal onClose={closeErrorModal}>
+          <AlertModal message={"Loading..."}/>  </Modal>}
       {!isIngredientsLoading && !ingredientsError && (
         <>
           <BurgerIngredients />

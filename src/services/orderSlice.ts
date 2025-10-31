@@ -1,15 +1,25 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import type { OrderResponse, AsyncState } from "../compoments/Interfaces/Interfaces.tsx";
 import { request } from "../utils/request";
+import { getAccessToken } from "../utils/token";
 import { clearConstructor } from "./constructorSlice";
 
 export const createOrder = createAsyncThunk<number, string[]>(
     "order/create",
     async (data, thunkAPI) => {
         try {
+            const token = getAccessToken();
+
+            if (!token) {
+                throw new Error("Необходима авторизация");
+            }
+
             const json = await request<OrderResponse>("/orders", {
                 method: "POST",
-                headers: { "Content-Type": "application/json" },
+                headers: {
+                    "Content-Type": "application/json",
+                    authorization: token,
+                },
                 body: JSON.stringify({ ingredients: data }),
             });
             thunkAPI.dispatch(clearConstructor());

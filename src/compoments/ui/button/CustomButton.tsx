@@ -6,18 +6,16 @@ import {
 } from "@ya.praktikum/react-developer-burger-ui-components";
 import stylesCustomButton from "./customButton.module.css";
 
+type ImageKey = "burger" | "listIcon" | "userProfile";
+
 interface CustomButtonProps {
   image: ImageKey;
   text: string;
-  onClick?: () => void;
+  active?: boolean;
+  className?: string;
 }
-type ImageKey = "burger" | "listIcon" | "userProfile";
 
-const CustomButton: React.FC<CustomButtonProps> = ({
-  image,
-  text,
-  onClick,
-}) => {
+const CustomButton = ({ image, text, active = false, className = "" }: CustomButtonProps) => {
   const [hovered, setHovered] = useState(false);
   const images: Record<ImageKey, JSX.Element> = {
     burger: <BurgerIcon type={hovered ? "primary" : "secondary"} />,
@@ -25,22 +23,17 @@ const CustomButton: React.FC<CustomButtonProps> = ({
     userProfile: <ProfileIcon type={hovered ? "primary" : "secondary"} />,
   };
 
-  const handleButtonClick = () => {
-    if (onClick) {
-      onClick();
-    }
-  };
+  const classes = [stylesCustomButton.link, className, active ? stylesCustomButton.linkActive : ""].filter(Boolean).join(" ");
+
   return (
-    <a
-      href="#!"
-      className={`${stylesCustomButton.link} pr-5 pl-5 pt-4 pb-4`}
-      onClick={handleButtonClick}
+    <div
+      className={`${classes} pr-5 pl-5 pt-4 pb-4`}
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
     >
       <span className={stylesCustomButton.icon}>{images[image]}</span>
       <span className={`text text_type_main-default`}>{text}</span>
-    </a>
+    </div>
   );
 };
 
