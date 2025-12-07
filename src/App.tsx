@@ -20,6 +20,9 @@ import ProtectedRoute from "./compoments/protected-route/ProtectedRoute.tsx";
 import { checkUserAuth } from "./services/userActions";
 import type { AppDispatch } from "./services/store";
 import IngredientModal from "./compoments/ui/modal/IngredientModal.tsx";
+import FeedPage from "./pages/Feed";
+import OrderInfoPage from "./pages/OrderInfoPage";
+import OrderModal from "./compoments/ui/modal/OrderModal";
 
 const AppRoutes = () => {
     const dispatch = useDispatch<AppDispatch>();
@@ -54,13 +57,18 @@ const AppRoutes = () => {
                 <Route path="/profile" element={<ProtectedRoute element={<Profile />} />}>
                     <Route index element={<ProfileInfo />} />
                     <Route path="orders" element={<ProfileOrders />} />
+                    <Route path="orders/:id" element={<OrderInfoPage />} />
                 </Route>
+                <Route path="/feed" element={<FeedPage />} />
+                <Route path="/feed/:id" element={<OrderInfoPage />} />
                 <Route path="/ingredients/:id" element={<IngredientContent />} />
                 <Route path="*" element={<NotFound />} />
             </Routes>
             {backgroundLocation && (
                 <Routes>
                     <Route path="/ingredients/:id" element={<IngredientModal />} />
+                    <Route path="/feed/:id" element={<OrderModal />} />
+                    <Route path="/profile/orders/:id" element={<ProtectedRoute element={<OrderModal />} />} />
                 </Routes>
             )}
         </>

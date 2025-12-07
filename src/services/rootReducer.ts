@@ -4,6 +4,9 @@ import { constructorReducer } from "./constructorSlice";
 import { currentIngredientReducer } from "./currentIngredientSlice";
 import { orderReducer } from "./orderSlice";
 import { userReducer } from "./userSlice";
+import { ordersFeedReducer } from "./ordersFeedSlice";
+import { userOrdersReducer } from "./userOrdersSlice";
+import { orderDetailsReducer } from "./orderDetailsSlice";
 
 export const rootReducer = combineReducers({
     ingredients: ingredientsReducer,
@@ -11,6 +14,9 @@ export const rootReducer = combineReducers({
     currentIngredient: currentIngredientReducer,
     order: orderReducer,
     user: userReducer,
+    ordersFeed: ordersFeedReducer,
+    userOrders: userOrdersReducer,
+    orderDetails: orderDetailsReducer,
 });
 
 export type RootState = ReturnType<typeof rootReducer>;

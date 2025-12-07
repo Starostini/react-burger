@@ -70,3 +70,27 @@ export type OrderResponse = {
 };
 
 export type IngredientType = "bun" | "sauce" | "main";
+
+export type OrderStatus = "created" | "pending" | "done";
+
+export interface OrdersFeedItem {
+    _id: string;
+    ingredients: string[];
+    status: OrderStatus;
+    name: string;
+    createdAt: string;
+    updatedAt: string;
+    number: number;
+}
+
+export interface OrdersFeedResponse {
+    success: boolean;
+    orders: OrdersFeedItem[];
+    total: number;
+    totalToday: number;
+}
+
+export interface OrderDetailsResponse {
+    success: boolean;
+    orders: OrdersFeedItem[];
+}

@@ -4,7 +4,7 @@ import { Link, useLocation, useNavigate } from "react-router-dom";
 import { Input, PasswordInput, Button } from "@ya.praktikum/react-developer-burger-ui-components";
 import styles from "./AuthPage.module.css";
 import { request } from "../utils/request";
-import { sessionStorageResetPasswordFlag } from "./ForgotPassword";
+import { resetPasswordFlagKey } from "../constants/sessionStorageKeys";
 
 interface ResetPasswordResponse {
     success: boolean;
@@ -22,14 +22,14 @@ const ResetPassword = () => {
 
     useEffect(() => {
         const fromForgot = Boolean((location.state as { fromForgot?: boolean } | undefined)?.fromForgot);
-        const allowed = sessionStorage.getItem(sessionStorageResetPasswordFlag);
+        const allowed = sessionStorage.getItem(resetPasswordFlagKey);
 
         if (!fromForgot && !allowed) {
             navigate("/forgot-password", { replace: true });
         }
 
         return () => {
-            sessionStorage.removeItem(sessionStorageResetPasswordFlag);
+            sessionStorage.removeItem(resetPasswordFlagKey);
         };
     }, [location.state, navigate]);
 
@@ -59,7 +59,7 @@ const ResetPassword = () => {
             }
 
             setMessage(data.message || "Пароль успешно обновлён");
-            sessionStorage.removeItem(sessionStorageResetPasswordFlag);
+            sessionStorage.removeItem(resetPasswordFlagKey);
             navigate("/login", { replace: true });
         } catch (err) {
             const errorMessage = err instanceof Error ? err.message : "Произошла неизвестная ошибка";

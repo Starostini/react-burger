@@ -24,8 +24,9 @@ export const createOrder = createAsyncThunk<number, string[]>(
             });
             thunkAPI.dispatch(clearConstructor());
             return json.order.number;
-        } catch (e: any) {
-            return thunkAPI.rejectWithValue(e.message ?? "Order failed");
+        } catch (error: unknown) {
+            const message = error instanceof Error ? error.message : "Order failed";
+            return thunkAPI.rejectWithValue(message);
         }
     }
 );

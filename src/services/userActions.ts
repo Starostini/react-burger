@@ -1,6 +1,7 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import { request } from "../utils/request";
 import { saveTokens, clearTokens, getRefreshToken, getAccessToken } from "../utils/token";
+import type { AppDispatch } from "./store";
 
 interface UserPayload {
     email: string;
@@ -146,7 +147,7 @@ export const logoutUser = createAsyncThunk<LogoutResponse, void, { rejectValue: 
 );
 
 const authorizedRequest = async <T>(
-    thunkAPI: { dispatch: (action: unknown) => any },
+    thunkAPI: { dispatch: AppDispatch },
     callback: (token: string) => Promise<T>
 ) => {
     const attempt = async () => {
@@ -242,7 +243,7 @@ export const checkUserAuth = createAsyncThunk<void, void>(
                 await dispatch(fetchUser()).unwrap();
                 return;
             }
-        } catch (error) {
+        } catch {
             clearTokens();
         } finally {
             dispatch({ type: "user/setAuthChecked", payload: true });

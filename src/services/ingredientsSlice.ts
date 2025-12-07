@@ -26,8 +26,9 @@ export const fetchIngredients = createAsyncThunk<StoreIngredient[]>(
                 },
             }));
             return formatted;
-        } catch (e: any) {
-            return thunkAPI.rejectWithValue(e.message ?? "Failed to fetch");
+        } catch (error: unknown) {
+            const message = error instanceof Error ? error.message : "Failed to fetch";
+            return thunkAPI.rejectWithValue(message);
         }
     }
 );

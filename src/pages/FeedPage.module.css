@@ -1,0 +1,81 @@
+.page {
+    max-width: 1240px;
+    margin: 0 auto;
+    display: flex;
+    gap: 60px;
+    align-items: flex-start;
+}
+
+.feed {
+    flex: 2;
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    max-width: 610px;
+}
+
+.ordersList {
+    display: flex;
+    flex-direction: column;
+
+    gap: 8px;
+    max-height: calc(100vh - 260px);
+    overflow-y: auto;
+}
+
+.summary {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 60px;
+}
+
+.statusLists {
+    display: flex;
+    gap: 36px;
+}
+
+.statusColumn {
+    flex: 1;
+    max-width: 272px;
+}
+
+.statusTotal {
+    text-shadow: 0 0 20px rgba(76, 76, 255, 1);
+}
+.readyList {
+    color: #00cccc;
+}
+
+.pendingList {
+    color: #f2f2f3;
+}
+
+.statusList {
+    display: flex;
+    flex-wrap: nowrap;
+    gap: 16px;
+    align-items: flex-start;
+    overflow-x: auto;
+}
+
+.statusSubColumn {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    min-width: 120px;
+}
+
+.totalCard {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.message {
+    color: #8585ad;
+}
+
+.statusPlaceholder {
+    color: inherit;
+}

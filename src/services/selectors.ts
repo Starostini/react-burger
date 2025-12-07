@@ -28,3 +28,23 @@ export const currentUser = (state: RootState) => state.user.data;
 export const userLoading = (state: RootState) => state.user.isLoading;
 export const userError = (state: RootState) => state.user.error;
 export const isAuthChecked = (state: RootState) => state.user.isAuthChecked;
+
+export const feedOrders = (state: RootState) => state.ordersFeed.orders;
+export const feedTotals = (state: RootState) => ({
+    total: state.ordersFeed.total,
+    totalToday: state.ordersFeed.totalToday,
+});
+export const feedStatus = (state: RootState) => state.ordersFeed.status;
+export const feedError = (state: RootState) => state.ordersFeed.error;
+export const feedOrderByNumber = (state: RootState, orderNumber: number) =>
+    state.ordersFeed.orders.find((order) => order.number === orderNumber) ?? null;
+
+export const userOrders = (state: RootState) => state.userOrders.orders;
+export const userOrdersStatus = (state: RootState) => state.userOrders.status;
+export const userOrdersError = (state: RootState) => state.userOrders.error;
+export const userOrderByNumber = (state: RootState, orderNumber: number) =>
+    state.userOrders.orders.find((order) => order.number === orderNumber) ?? null;
+
+export const orderDetailsData = (state: RootState) => state.orderDetails.data;
+export const orderDetailsLoading = (state: RootState) => state.orderDetails.isLoading;
+export const orderDetailsError = (state: RootState) => state.orderDetails.error;

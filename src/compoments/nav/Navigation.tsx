@@ -13,7 +13,7 @@ const Navigation = () => {
                 <NavLink to="/" className={navigationStyles.link} end>
                     {({ isActive }) => <CustomButton image="burger" text="Конструктор" active={isActive} />}
                 </NavLink>
-                <NavLink to="/orders" className={navigationStyles.link}>
+                <NavLink to="/feed" className={navigationStyles.link}>
                     {({ isActive }) => <CustomButton image="listIcon" text="Лента заказов" active={isActive} />}
                 </NavLink>
             </div>

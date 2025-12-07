@@ -4,8 +4,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { Input, Button } from "@ya.praktikum/react-developer-burger-ui-components";
 import styles from "./AuthPage.module.css";
 import { request } from "../utils/request";
-
-const sessionStorageResetPasswordFlag = "resetPasswordFlag";
+import { resetPasswordFlagKey } from "../constants/sessionStorageKeys";
 
 interface PasswordResetResponse {
     success: boolean;
@@ -45,7 +44,7 @@ const ForgotPassword = () => {
             }
 
             setMessage(data.message || "Письмо с инструкцией отправлено");
-            sessionStorage.setItem(sessionStorageResetPasswordFlag, "true");
+            sessionStorage.setItem(resetPasswordFlagKey, "true");
             navigate("/reset-password", { replace: true, state: { fromForgot: true } });
         } catch (err) {
             const errorMessage = err instanceof Error ? err.message : "Произошла неизвестная ошибка";
@@ -89,4 +88,3 @@ const ForgotPassword = () => {
 };
 
 export default ForgotPassword;
-export { sessionStorageResetPasswordFlag };
