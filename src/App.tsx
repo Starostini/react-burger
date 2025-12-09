@@ -4,7 +4,7 @@ import { HTML5Backend } from "react-dnd-html5-backend";
 import "./App.css";
 import { BrowserRouter as Router, Routes, Route, useLocation } from "react-router-dom";
 import type { Location } from "react-router-dom";
-import { useDispatch } from "react-redux";
+import { useAppDispatch } from "./services/hooks.ts";
 import Main from "./compoments/main/Main.tsx";
 import AppHeader from "./compoments/header/AppHeader.tsx";
 import Login from "./pages/Login";
@@ -18,19 +18,23 @@ import IngredientContent from "./compoments/ui/modal/modalContents/IngredientCon
 import NotFound from "./pages/NotFound";
 import ProtectedRoute from "./compoments/protected-route/ProtectedRoute.tsx";
 import { checkUserAuth } from "./services/userActions";
-import type { AppDispatch } from "./services/store";
 import IngredientModal from "./compoments/ui/modal/IngredientModal.tsx";
 import FeedPage from "./pages/Feed";
 import OrderInfoPage from "./pages/OrderInfoPage";
 import OrderModal from "./compoments/ui/modal/OrderModal";
+import { fetchIngredients } from "./services/ingredientsSlice";
 
 const AppRoutes = () => {
-    const dispatch = useDispatch<AppDispatch>();
+    const dispatch = useAppDispatch();
     const location = useLocation();
     const backgroundLocation = (location.state as { backgroundLocation?: Location })?.backgroundLocation;
 
     useEffect(() => {
         dispatch(checkUserAuth());
+    }, [dispatch]);
+
+    useEffect(() => {
+        dispatch(fetchIngredients());
     }, [dispatch]);
 
     return (

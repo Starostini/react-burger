@@ -2,7 +2,7 @@ import React from "react";
 import type { ReactElement } from "react";
 import { Navigate, useLocation } from "react-router-dom";
 import type { Location } from "react-router-dom";
-import { useSelector } from "react-redux";
+import { useAppSelector } from "../../services/hooks.ts";
 import { currentUser, isAuthChecked } from "../../services/selectors";
 
 interface ProtectedRouteElementProps {
@@ -11,8 +11,8 @@ interface ProtectedRouteElementProps {
 }
 
 const ProtectedRoute = ({ onlyUnAuth = false, element }: ProtectedRouteElementProps) => {
-    const user = useSelector(currentUser);
-    const authChecked = useSelector(isAuthChecked);
+    const user = useAppSelector(currentUser);
+    const authChecked = useAppSelector(isAuthChecked);
     const location = useLocation();
 
     if (!authChecked) {

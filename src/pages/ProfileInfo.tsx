@@ -1,12 +1,11 @@
 import React, { useEffect, useMemo, useState } from "react";
 import type { ChangeEvent, FormEvent } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useAppDispatch, useAppSelector } from "../services/hooks.ts";
 import {Button, EditIcon, Input,  ShowIcon, HideIcon} from "@ya.praktikum/react-developer-burger-ui-components";
 import styles from "./ProfileStyle.module.css";
 import { currentUser, userLoading } from "../services/selectors";
 import { clearUserError } from "../services/userSlice";
 import { updateUser } from "../services/userActions";
-import type { AppDispatch } from "../services/store";
 import { ProfileContainer } from "./Profile";
 
 interface ProfileFormState {
@@ -16,9 +15,9 @@ interface ProfileFormState {
 }
 
 const ProfileInfo = () => {
-    const dispatch = useDispatch<AppDispatch>();
-    const user = useSelector(currentUser);
-    const isGlobalLoading = useSelector(userLoading);
+    const dispatch = useAppDispatch();
+    const user = useAppSelector(currentUser);
+    const isGlobalLoading = useAppSelector(userLoading);
     const [isNameEditable, setIsNameEditable] = useState(true);
     const [isEmailEditable, setIsEmailEditable] = useState(true);
     const [isPasswordEditable, setIsPasswordEditable] = useState(true);

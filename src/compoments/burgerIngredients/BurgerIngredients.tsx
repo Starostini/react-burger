@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useRef, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useAppDispatch, useAppSelector } from "../../services/hooks.ts";
 import { useLocation, useNavigate } from "react-router-dom";
 import Tabs from "../ui/tab/Tabs";
 import IngredientsComponent from "../ui/ingredients/IngredientsComponent";
@@ -10,10 +10,8 @@ import {
   constructorItems,
   allIngredients,
 } from "../../services/selectors";
-import type { AppDispatch } from "../../services/store.ts";
 import { setCurrent } from "../../services/currentIngredientSlice";
 import type { StoreIngredient } from "../Interfaces/Interfaces.tsx";
-import { fetchIngredients } from "../../services/ingredientsSlice";
 
 type IngredientType = StoreIngredient["type"];
 
@@ -30,22 +28,16 @@ interface Tab {
   type: "bun" | "sauce" | "main";
 }
 const BurgerIngredients: React.FC = () => {
-  const dispatch = useDispatch<AppDispatch>();
+  const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const location = useLocation();
   const [tabs, setTabs] = useState<Tab[]>([]);
   const [active, setActive] = useState<IngredientType | "">("");
   const scrollerRef = useRef<Partial<Record<IngredientType, HTMLDivElement | null>>>({});
   const scrollContainerRef = useRef<HTMLDivElement | null>(null);
-  const bun = useSelector(constructorBun);
-  const items = useSelector(constructorItems);
-  const ingredients = useSelector(allIngredients);
-
-  useEffect(() => {
-    if (!ingredients || ingredients.length === 0) {
-      dispatch(fetchIngredients());
-    }
-  }, [dispatch, ingredients]);
+  const bun = useAppSelector(constructorBun);
+  const items = useAppSelector(constructorItems);
+  const ingredients = useAppSelector(allIngredients);
 
   const dataIngredients = useMemo(() => {
     if (!ingredients || ingredients.length === 0) {

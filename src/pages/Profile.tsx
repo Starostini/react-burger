@@ -1,19 +1,18 @@
 import React from "react";
 import type { ReactNode } from "react";
 import { NavLink, Outlet } from "react-router-dom";
-import { useDispatch, useSelector } from "react-redux";
+import { useAppDispatch, useAppSelector } from "../services/hooks.ts";
 import { logoutUser } from "../services/userActions";
 import { userError, userLoading } from "../services/selectors";
-import type { AppDispatch } from "../services/store";
 import styles from "./ProfileStyle.module.css";
 
 const navClassName = ({ isActive }: { isActive: boolean }) =>
     `${styles.link} text text_type_main-medium text_color_inactive ${isActive ? styles.linkActive : ""}`.trim();
 
 const Profile = () => {
-    const dispatch = useDispatch<AppDispatch>();
-    const isLoading = useSelector(userLoading);
-    const error = useSelector(userError);
+    const dispatch = useAppDispatch();
+    const isLoading = useAppSelector(userLoading);
+    const error = useAppSelector(userError);
 
     const handleLogout = () => {
         dispatch(logoutUser())

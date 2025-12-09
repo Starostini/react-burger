@@ -1,13 +1,11 @@
 import React, { useEffect, useMemo } from "react";
 import { useParams } from "react-router-dom";
-import { useDispatch, useSelector } from "react-redux";
+import { useAppDispatch, useAppSelector } from "../../../../services/hooks.ts";
 import IngredientDetails from "./IngredientsDetail.tsx";
 import styles from "./IngredientPage.module.css";
 import { allIngredients, loading as ingredientsLoading, error as ingredientsError } from "../../../../services/selectors.ts";
 import type { Ingredient as IngredientType, StoreIngredient } from "../../../Interfaces/Interfaces.tsx";
-import { fetchIngredients } from "../../../../services/ingredientsSlice.ts";
 import { setCurrent, clearCurrent } from "../../../../services/currentIngredientSlice.ts";
-import type { AppDispatch } from "../../../../services/store.ts";
 
 const mapToIngredient = (ingredient: StoreIngredient): IngredientType => ({
     id: ingredient.id,
@@ -23,16 +21,10 @@ const mapToIngredient = (ingredient: StoreIngredient): IngredientType => ({
 
 export const Ingredient = () => {
     const { id } = useParams();
-    const dispatch = useDispatch<AppDispatch>();
-    const ingredients = useSelector(allIngredients);
-    const isLoading = useSelector(ingredientsLoading);
-    const fetchError = useSelector(ingredientsError);
-
-    useEffect(() => {
-        if (!ingredients || ingredients.length === 0) {
-            dispatch(fetchIngredients());
-        }
-    }, [dispatch, ingredients]);
+    const dispatch = useAppDispatch();
+    const ingredients = useAppSelector(allIngredients);
+    const isLoading = useAppSelector(ingredientsLoading);
+    const fetchError = useAppSelector(ingredientsError);
 
     const ingredient = useMemo(() => {
         if (!id) {

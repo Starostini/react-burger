@@ -2,21 +2,20 @@ import React, { useState } from "react";
 import type { ChangeEvent, FormEvent } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import type { Location } from "react-router-dom";
-import { useDispatch, useSelector } from "react-redux";
+import { useAppDispatch, useAppSelector } from "../services/hooks.ts";
 import { Input, PasswordInput, Button } from "@ya.praktikum/react-developer-burger-ui-components";
 import styles from "./AuthPage.module.css";
 import { loginUser } from "../services/userActions";
 import { clearUserError } from "../services/userSlice";
 import { userError, userLoading } from "../services/selectors";
-import type { AppDispatch } from "../services/store";
 
 const Login = () => {
-    const dispatch = useDispatch<AppDispatch>();
+    const dispatch = useAppDispatch();
     const navigate = useNavigate();
     const location = useLocation();
-    const authError = useSelector(userError);
+    const authError = useAppSelector(userError);
 
-    const isLoading = useSelector(userLoading);
+    const isLoading = useAppSelector(userLoading);
 
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");

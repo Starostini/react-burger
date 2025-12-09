@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useAppDispatch, useAppSelector } from "../../services/hooks.ts";
 import { useLocation, useNavigate } from "react-router-dom";
 import BurgerIngredients from "../burgerIngredients/BurgerIngredients";
 import BurgerConstructor from "../burgerConstructor/BurgerConstructor";
@@ -20,11 +20,10 @@ import {
   isAuthChecked,
 } from "../../services/selectors";
 import { createOrder } from "../../services/orderSlice";
-import type { AppDispatch } from "../../services/store.ts";
 import AlertModal from "../ui/modal/modalContents/AlertModal.tsx";
 
 const Main: React.FC = () => {
-  const dispatch = useDispatch<AppDispatch>();
+  const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const location = useLocation();
   const {
@@ -37,15 +36,15 @@ const Main: React.FC = () => {
     openModal: openErrorModal,
     closeModal: closeErrorModal,
   } = useModal();
-  const bun = useSelector(constructorBun);
-  const items = useSelector(constructorItems);
-  const orderNumber = useSelector(orderNumberState);
-  const isOrderLoading = useSelector(orderLoading);
-  const orderErr = useSelector(orderError);
-  const isIngredientsLoading = useSelector(loading);
-  const ingredientsError = useSelector(error);
-  const user = useSelector(currentUser);
-  const authChecked = useSelector(isAuthChecked);
+  const bun = useAppSelector(constructorBun);
+  const items = useAppSelector(constructorItems);
+  const orderNumber = useAppSelector(orderNumberState);
+  const isOrderLoading = useAppSelector(orderLoading);
+  const orderErr = useAppSelector(orderError);
+  const isIngredientsLoading = useAppSelector(loading);
+  const ingredientsError = useAppSelector(error);
+  const user = useAppSelector(currentUser);
+  const authChecked = useAppSelector(isAuthChecked);
 
   useEffect(() => {
     if (ingredientsError) {

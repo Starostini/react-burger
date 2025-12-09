@@ -3,7 +3,6 @@ import OrderInfo from "./OrderInfo";
 import { useOrderDetails } from "../hooks/useOrderDetails";
 import { useAppDispatch, useAppSelector } from "../../services/hooks";
 import { allIngredients } from "../../services/selectors";
-import { fetchIngredients } from "../../services/ingredientsSlice";
 import { clearOrderDetails } from "../../services/orderDetailsSlice";
 
 interface OrderInfoContainerProps {
@@ -15,12 +14,6 @@ const OrderInfoContainer: React.FC<OrderInfoContainerProps> = ({ orderNumber, va
     const dispatch = useAppDispatch();
     const ingredients = useAppSelector(allIngredients);
     const { order, isLoading, error } = useOrderDetails(orderNumber);
-
-    useEffect(() => {
-        if (!ingredients || ingredients.length === 0) {
-            dispatch(fetchIngredients());
-        }
-    }, [dispatch, ingredients]);
 
     useEffect(
         () => () => {

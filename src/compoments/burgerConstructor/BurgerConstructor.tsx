@@ -1,5 +1,5 @@
 import React, { useCallback, useMemo } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useAppDispatch, useAppSelector } from "../../services/hooks.ts";
 import { useDrop } from "react-dnd";
 import styles from "./burgerConstructor.module.css";
 import {
@@ -7,7 +7,6 @@ import {
   Button,
   CurrencyIcon,
 } from "@ya.praktikum/react-developer-burger-ui-components";
-import type { AppDispatch } from "../../services/store.ts";
 import {
   addIngredient,
   deleteIngredient,
@@ -33,11 +32,11 @@ interface BurgerConstructorProps {
 }
 
 const BurgerConstructor: React.FC<BurgerConstructorProps> = ({ onOrder }) => {
-  const dispatch = useDispatch<AppDispatch>();
-  const bun = useSelector(constructorBun);
-  const items = useSelector(constructorItems);
-  const total = useSelector(summPrice);
-  const isOrderLoading = useSelector(orderLoading);
+  const dispatch = useAppDispatch();
+  const bun = useAppSelector(constructorBun);
+  const items = useAppSelector(constructorItems);
+  const total = useAppSelector(summPrice);
+  const isOrderLoading = useAppSelector(orderLoading);
 
   const [{ isHovering: isBunHover }, bunDropRef] = useDrop<StoreIngredient, void, DragCollected>(
     () => ({

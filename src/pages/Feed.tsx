@@ -4,7 +4,6 @@ import styles from "./FeedPage.module.css";
 import { useAppDispatch, useAppSelector } from "../services/hooks";
 import { ordersFeedActions } from "../services/ordersFeedSlice";
 import { allIngredients, feedError, feedOrders, feedStatus, feedTotals } from "../services/selectors";
-import { fetchIngredients } from "../services/ingredientsSlice";
 
 const FeedPage = () => {
     const dispatch = useAppDispatch();
@@ -20,12 +19,6 @@ const FeedPage = () => {
             dispatch(ordersFeedActions.disconnect());
         };
     }, [dispatch]);
-
-    useEffect(() => {
-        if (!ingredients || ingredients.length === 0) {
-            dispatch(fetchIngredients());
-        }
-    }, [dispatch, ingredients]);
 
     const statusOrders = useMemo(() => {
         const readyNumbers: number[] = [];
