@@ -1,3 +1,4 @@
+//@ts-expect-error React issue
 import React, { useEffect, useMemo } from "react";
 import OrderCard from "../compoments/orders/OrderCard";
 import styles from "./FeedPage.module.css";

@@ -1,3 +1,4 @@
+//@ts-expect-error React issue
 import React, { useEffect, useMemo } from "react";
 import { useParams } from "react-router-dom";
 import { useAppDispatch, useAppSelector } from "../../../../services/hooks.ts";

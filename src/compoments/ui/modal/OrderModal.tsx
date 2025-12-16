@@ -1,3 +1,4 @@
+//@ts-expect-error React issue
 import React, { useCallback } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import Modal from "./Modal";

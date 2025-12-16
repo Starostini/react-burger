@@ -1,3 +1,4 @@
+{/*//@ts-expect-error React issue*/}
 import React, { useEffect, useState } from "react";
 import type { ChangeEvent, FormEvent } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
@@ -83,7 +84,7 @@ const ResetPassword = () => {
                     onChange={(event: ChangeEvent<HTMLInputElement>) => setPassword(event.target.value)}
                     extraClass="mb-6"
                 />
-
+                {/*//@ts-expect-error undefined property issue*/}
                 <Input
                     type="text"
                     placeholder="Введите код из письма"

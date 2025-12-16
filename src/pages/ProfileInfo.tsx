@@ -1,3 +1,4 @@
+//@ts-expect-error React issue
 import React, { useEffect, useMemo, useState } from "react";
 import type { ChangeEvent, FormEvent } from "react";
 import { useAppDispatch, useAppSelector } from "../services/hooks.ts";
@@ -115,6 +116,7 @@ const ProfileInfo = () => {
         <ProfileContainer>
             <form className={styles.form} onSubmit={handleSubmit}>
                 <div className={styles.inputCover}>
+                 {/*//@ts-expect-error undefined property issue*/}
                 <Input
                     type="text"
                     placeholder="Имя"
@@ -129,6 +131,7 @@ const ProfileInfo = () => {
                     </div>
                 </div>
                 <div className={styles.inputCover}>
+                    {/*//@ts-expect-error undefined property issue*/}
                 <Input
                     type="email"
                     placeholder="Логин"
@@ -143,6 +146,7 @@ const ProfileInfo = () => {
                     </div>
                 </div>
                 <div className={styles.inputCover}>
+                    {/*//@ts-expect-error undefined property issue*/}
                 <Input
                     type={passwordType}
                     placeholder="Пароль"

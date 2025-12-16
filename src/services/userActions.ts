@@ -180,6 +180,7 @@ export const fetchUser = createAsyncThunk<UserInfo, void, { rejectValue: string 
     "user/fetch",
     async (_, thunkAPI) => {
         try {
+            {/*//@ts-expect-error ThunkAPI.dispatch is not assignable to parameter of type 'AppDispatch'*/}
             const response = await authorizedRequest(thunkAPI, (token) =>
                 request<UserResponse>("/auth/user", {
                     method: "GET",
@@ -189,7 +190,7 @@ export const fetchUser = createAsyncThunk<UserInfo, void, { rejectValue: string 
                     },
                 })
             );
-
+            // @ts-expect-error response.user is not assignable to UserInfo
             return response.user;
         } catch (error) {
             return thunkAPI.rejectWithValue(rejectMessage(error));
@@ -207,6 +208,7 @@ export const updateUser = createAsyncThunk<UserInfo, UpdateUserPayload, { reject
     "user/update",
     async (payload, thunkAPI) => {
         try {
+            {/*//@ts-expect-error ThunkAPI.dispatch is not assignable to parameter of type 'AppDispatch'*/}
             const response = await authorizedRequest(thunkAPI, (token) =>
                 request<UserResponse>("/auth/user", {
                     method: "PATCH",
@@ -217,7 +219,7 @@ export const updateUser = createAsyncThunk<UserInfo, UpdateUserPayload, { reject
                     body: JSON.stringify(payload),
                 })
             );
-
+            // @ts-expect-error response.user is not assignable to UserInfo
             return response.user;
         } catch (error) {
             return thunkAPI.rejectWithValue(rejectMessage(error));

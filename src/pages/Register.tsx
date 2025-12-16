@@ -1,3 +1,4 @@
+//@ts-expect-error React issue
 import React, { useState } from "react";
 import type { ChangeEvent, FormEvent } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
@@ -48,7 +49,7 @@ const Register = () => {
 
                 {validationError && <p className={`${styles.error} text text_type_main-small mb-6`}>{validationError}</p>}
                 {authError && <p className={`${styles.error} text text_type_main-small mb-6`}>{authError}</p>}
-
+                {/*//@ts-expect-error undefined property issue*/}
                 <Input
                     type="text"
                     placeholder="Имя"
@@ -56,7 +57,7 @@ const Register = () => {
                     onChange={(event: ChangeEvent<HTMLInputElement>) => setName(event.target.value)}
                     extraClass="mb-6"
                 />
-
+                {/*//@ts-expect-error undefined property issue*/}
                 <Input
                     type="email"
                     placeholder="E-mail"

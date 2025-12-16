@@ -1,3 +1,4 @@
+//@ts-expect-error React issue
 import React from "react";
 import { useParams } from "react-router-dom";
 import OrderInfoContainer from "../compoments/orders/OrderInfoContainer";

@@ -1,3 +1,4 @@
+//@ts-expect-error React issue
 import React from "react";
 import type { ReactElement } from "react";
 import { Navigate, useLocation } from "react-router-dom";

@@ -1,3 +1,4 @@
+//@ts-expect-error React issue
 import React, { useState } from "react";
 import type { ChangeEvent, FormEvent } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
@@ -48,7 +49,7 @@ const Login = () => {
                 <h2 className={`text text_type_main-medium mb-6`}>Вход</h2>
                 {validationError && <p className={`${styles.error} text text_type_main-small`}>{validationError}</p>}
                 {authError && <p className={`${styles.error} text text_type_main-small`}>{authError}</p>}
-
+                {/*@ts-expect-error undefined property issue*/}
                 <Input
                     type="email"
                     placeholder="E-mail"

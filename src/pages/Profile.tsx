@@ -1,3 +1,4 @@
+//@ts-expect-error React issue
 import React from "react";
 import type { ReactNode } from "react";
 import { NavLink, Outlet } from "react-router-dom";

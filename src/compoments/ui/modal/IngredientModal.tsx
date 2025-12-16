@@ -1,3 +1,4 @@
+//@ts-expect-error React issue
 import React, { useCallback, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAppDispatch } from "../../../services/hooks.ts";

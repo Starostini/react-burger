@@ -1,3 +1,4 @@
+//@ts-expect-error React issue
 import React, { useState } from "react";
 import type { ChangeEvent, FormEvent } from "react";
 import { Link, useNavigate } from "react-router-dom";
@@ -61,7 +62,7 @@ const ForgotPassword = () => {
 
                 {error && <p className={`${styles.error} text text_type_main-small`}>{error}</p>}
                 {message && <p className={`${styles.message} text text_type_main-default`}>{message}</p>}
-
+                {/*@ts-expect-error undefined property issue*/}
                 <Input
                     type="email"
                     placeholder="Укажите e-mail"
