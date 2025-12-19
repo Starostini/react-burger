@@ -28,6 +28,7 @@ const Modal: React.FC<ModalProps> = ({ onClose, children }) => {
         <button
           className={`${stylesModal.modalClose} mt-15 mr-10`}
           onClick={onClose}
+          data-cyid="modal-close"
         >
           <CloseIcon type="primary" />
         </button>

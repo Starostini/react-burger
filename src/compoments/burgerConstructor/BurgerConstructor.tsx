@@ -21,7 +21,8 @@ import {
 import type { StoreIngredient } from "../Interfaces/Interfaces.tsx";
 import ConstructorItem from "./ConstructorItem";
 
-const BUN_IMAGE_FALLBACK = "/images/N-200inormal.png";
+const ASSET_BASE = import.meta.env.BASE_URL;
+const BUN_IMAGE_FALLBACK = `${ASSET_BASE}images/N-200inormal.png`;
 
 type DragCollected = {
   isHovering: boolean;
@@ -100,9 +101,10 @@ const BurgerConstructor: React.FC<BurgerConstructorProps> = ({ onOrder }) => {
   const isOrderDisabled = !bun || items.length === 0 || isOrderLoading;
 
   return (
-    <section className={`${styles.container} mt-25 ml-4`}>
+    <section className={`${styles.container} mt-25 ml-4`} data-cyid="burger-constructor">
       <div
         ref={bunDropRef}
+        data-cyid="bun-drop"
         className={`${styles.buns} ${isBunHover ? styles.dropped : ""}`}
       >
         <div className="ml-8 mb-2">
@@ -116,6 +118,7 @@ const BurgerConstructor: React.FC<BurgerConstructorProps> = ({ onOrder }) => {
         </div>
           <div
               ref={fillingsDropRef}
+              data-cyid="constructor-fillings"
               className={`${styles.line} ${
                   isFillHover ? styles.dropped : ""
               }`}

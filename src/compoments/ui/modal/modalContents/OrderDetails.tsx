@@ -8,6 +8,13 @@ interface OrderDetailsProps {
   error: string | null;
 }
 
+const ASSET_BASE = import.meta.env.BASE_URL;
+const STATUS_ICONS = [
+  `${ASSET_BASE}images/icon/Vector 1.svg`,
+  `${ASSET_BASE}images/icon/Vector 2.svg`,
+  `${ASSET_BASE}images/icon/Vector 3.svg`,
+];
+
 const OrderDetails: React.FC<OrderDetailsProps> = ({
   isLoading,
   orderNumber,
@@ -54,18 +61,9 @@ const OrderDetails: React.FC<OrderDetailsProps> = ({
     <>
       {renderBody()}
       <div className={`${stylesOrderDetails.vector} mt-15 mb-15 pt-10 pb-10`}>
-        <img
-          className={stylesOrderDetails.vectorsImg}
-          src="/images/icon/Vector 1.svg"
-        />
-        <img
-          className={stylesOrderDetails.vectorsImg}
-          src="/images/icon/Vector 2.svg"
-        />
-        <img
-          className={stylesOrderDetails.vectorsImg}
-          src="/images/icon/Vector 3.svg"
-        />
+        {STATUS_ICONS.map((src) => (
+          <img key={src} className={stylesOrderDetails.vectorsImg} src={src} />
+        ))}
         <CheckMarkIcon type="primary" />
       </div>
       <p className="text text_type_main-small mb-2">

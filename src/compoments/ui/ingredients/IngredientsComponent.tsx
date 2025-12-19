@@ -31,6 +31,9 @@ const IngredientsComponent: React.FC<IngredientComponentProps> = ({
   return (
     <div
       ref={dragRef}
+      data-cyid="ingredient-card"
+      data-ingredient-type={ingredient.type}
+      data-ingredient-name={name}
       className={`${stylesIngredients.card}`}
       onClick={() => onClick(ingredient)}
       style={{ opacity: isDragging ? 0.4 : 1 }}

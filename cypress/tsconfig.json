@@ -1,0 +1,11 @@
+{
+  "extends": "../tsconfig.app.json",
+  "compilerOptions": {
+    "module": "esnext",
+    "moduleResolution": "Bundler",
+    "types": ["cypress"],
+    "isolatedModules": false,
+    "noEmit": true
+  },
+  "include": ["./**/*.ts", "./**/*.tsx", "../cypress.config.ts"]
+}

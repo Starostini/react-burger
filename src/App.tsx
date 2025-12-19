@@ -83,7 +83,7 @@ function App() {
     return (
         <React.Fragment>
             <DndProvider backend={HTML5Backend}>
-                <Router>
+                <Router basename={import.meta.env.BASE_URL}>
                     <AppRoutes />
                 </Router>
             </DndProvider>
