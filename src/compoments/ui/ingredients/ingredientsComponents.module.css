@@ -1,0 +1,39 @@
+.card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  max-width: 272px;
+  position: relative;
+}
+.card:hover {
+  cursor: pointer;
+  transform: translateY(-4px);
+  transition: transform 0.3s ease;
+  box-shadow: 0 4px 8px #4c4cff;
+}
+.info {
+  flex-direction: column;
+  display: flex;
+  text-align: center;
+}
+
+.priceContainer {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  justify-content: center;
+}
+
+.counter {
+  position: absolute;
+  top: 0;
+  right: 0;
+  background-color: #4c4cff;
+  border-radius: 50%;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}

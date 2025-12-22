@@ -1,0 +1,47 @@
+.container {
+  width: 100%;
+  max-width: 584px;
+  max-height: 100vh;
+}
+
+.line {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  overflow-y: scroll;
+  flex-grow: 1;
+  overflow-y: auto;
+  max-height: calc(100vh - 590px);
+  scrollbar-width: thin;
+  scrollbar-color: #8585ad #2f2f37;
+}
+
+.element {
+  display: flex;
+  align-items: center;
+  width: 100%;
+}
+
+.constructorItem {
+  padding-left: 32px;
+}
+
+.order {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 40px;
+}
+
+.dropped {
+  border-color: #610fdc;
+  border-radius: 24px;
+  background: #6229FF08;
+}
+
+.empty_info {
+  margin: 0;
+  color: #8585ad;
+    padding: 28px 0;
+}

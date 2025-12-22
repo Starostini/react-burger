@@ -1,73 +1,67 @@
-# React + TypeScript + Vite
+## Основные возможности
+- каталог ингредиентов с детальной информацией в модальных окнах
+- drag-and-drop конструктор с подсчетом стоимости и валидацией данных
+- оформление заказа с авторизацией и отображением номера заказа
+- страницы входа, регистрации, восстановления и сброса пароля
+- публичная лента заказов и история заказов пользователя с live-обновлениями
+- защищенные маршруты профиля и модальные роуты для просмотра заказов и ингредиентов
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+## Технологии
+- React 18, TypeScript, Vite
+- React Router 7 с background routes для модальных окон
+- Redux Toolkit + собственные типизированные hooks, хранение ингредиентов, конструктора и заказов
+- Веб-сокеты через настраиваемый `socketMiddleware` для общей и персональной ленты заказов
+- React DnD для перетаскивания ингредиентов
+- UI библиотека `@ya.praktikum/react-developer-burger-ui-components`
+- Тесты: Jest (юнит) и Cypress (E2E)
 
-Currently, two official plugins are available:
-
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
-
-## React Compiler
-
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
-
-## Expanding the ESLint configuration
-
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
-
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
-
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+## Архитектура проекта
 ```
-
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
-
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
-
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+src
+├── compoments/       // UI-компоненты (бургер, модалки, навигация и т.д.)
+├── pages/            // Страницы и layout профиля
+├── services/         // Срезы Redux Toolkit, middleware и typed hooks
+├── utils/            // Вспомогательные функции и хранилище токенов
+├── constants/, images/, styles
+└── base.ts           // Конфигурация REST и WebSocket эндпоинтов
 ```
+В `services` находятся основные slices: `ingredientsSlice`, `constructorSlice`, `orderSlice`, `ordersFeedSlice`, `userSlice` и т.д. Для WebSocket-ленты используется фабрика `createSocketMiddleware`, которую можно переиспользовать для других источников данных.
+
+## Быстрый старт
+1. Убедитесь, что установлен Node.js LTS (>= 18) и npm.
+2. Клонируйте репозиторий и установите зависимости:
+   ```bash
+   npm install
+   ```
+3. Запустите dev-сервер Vite:
+   ```bash
+   npm run dev
+   ```
+4. Откройте приложение по адресу, который покажет Vite (по умолчанию http://localhost:5173).
+
+> Приложение использует публичный API `https://norma.education-services.ru`. Если нужен другой сервер, скорректируйте константы в `src/base.ts`.
+
+## Скрипты npm
+| Скрипт | Назначение |
+| --- | --- |
+| `npm run dev` | Запуск Vite в режиме разработки с HMR |
+| `npm run build` | TypeScript build + production сборка Vite в `dist/` |
+| `npm run preview` | Локальный просмотр готовой сборки |
+| `npm run lint` | Запуск ESLint по всему проекту |
+| `npm run test` | Юнит-тесты Jest (watchman отключен для macOS) |
+| `npm run test:watch` | Jest в watch-режиме |
+| `npm run cypress:open` | Открыть Cypress GUI для e2e тестов |
+| `npm run cypress:run` | Прогнать e2e тесты в headless режиме |
+| `npm run deploy` | Сборка и публикация на GitHub Pages (использует `gh-pages`) |
+
+### Тестирование
+- **Юнит тесты** расположены в `src/services/*.test.js` и покрывают основные Redux slices и утилиты. Запуск: `npm run test`.
+- **E2E тесты** в каталоге `cypress/`. Перед `npm run cypress:open` или `npm run cypress:run` поднимите dev-сервер (`npm run dev`) в отдельном терминале.
+
+## Деплой на GitHub Pages
+1. Убедитесь, что в `package.json` задан корректный `homepage` (например, `https://<username>.github.io/<repo>`), а в `vite.config.ts` указан `base` в соответствии с путём публикации.
+2. Выполните `npm run deploy`. Скрипт соберёт проект и загрузит содержимое `dist/` в ветку `gh-pages` через пакет `gh-pages`.
+
+## Полезные ссылки
+- Production-версия: https://starostini.github.io/react-burger
+- Дизайн-система компонентов: [Praktikum UI](https://www.npmjs.com/package/@ya.praktikum/react-developer-burger-ui-components)

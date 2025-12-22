@@ -1,0 +1,18 @@
+.orderNumber {
+  text-shadow: 0 0 20px rgba(76, 76, 255, 1);
+}
+
+.vector {
+  position: relative;
+}
+.vectorsImg {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  bottom: 0;
+  transform: translate(-50%, -50%);
+}
+
+.attentionTextBottom {
+  color: #8585ad;
+}

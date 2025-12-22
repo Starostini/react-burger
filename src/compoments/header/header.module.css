@@ -1,0 +1,4 @@
+.header {
+  margin: clamp(10px, 2vw, 40px) clamp(10px, 2vw, 40px);
+  background-color: #1c1c21;
+}
